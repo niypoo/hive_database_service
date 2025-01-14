@@ -60,32 +60,50 @@ class HiveDatabaseService extends GetxService {
     required String id,
     dynamic value,
   }) async =>
-      box<T>(boxName).put(id, value);
+      (await openBox<T>(boxName)).put(id, value);
 
   Future<T?> get<T>(
     String boxName, {
     required String id,
   }) async =>
-      box<T>(boxName).get(id);
+      (await openBox<T>(boxName)).get(id);
+
+  Future<Map<String, T>> getAllValues<T>(String boxName) async =>
+      (await openBox<T>(boxName)).getAllValues();
 
   Future<void> delete<T>(
     String boxName, {
     required String id,
   }) async =>
-      box<T>(boxName).delete(id);
+      (await openBox<T>(boxName)).delete(id);
 
   Future<void> deleteAll<T>(
     String boxName, {
     required List<String> ids,
   }) async =>
-      box<T>(boxName).deleteAll(ids);
+      (await openBox<T>(boxName)).deleteAll(ids);
 
-  Future<void> clear<T>(String boxName) async => box<T>(boxName).clear();
-  Future<void> flush<T>(String boxName) async => box<T>(boxName).flush();
+  Future<void> clear<T>(String boxName) async =>
+      (await openBox<T>(boxName)).clear();
+
+  Future<void> flush<T>(String boxName) async =>
+      (await openBox<T>(boxName)).flush();
+
+  Future<List<T?>> getAll<T>(
+    String boxName, {
+    required List<String> ids,
+  }) async =>
+      (await openBox<T>(boxName)).getAll(ids);
+
+  Future<List<String>> getAllKeys<T>(String boxName) async =>
+      (await openBox<T>(boxName)).getAllKeys();
 
   ///COLLECTIONS METHODS
-  Box<T> box<T>(String boxName) => Hive.box<T>(boxName);
-  List<T> all<T>(String boxName) => box<T>(boxName).values.toList();
+  Future<CollectionBox<T>> openBox<T>(String boxName) async {
+    final CollectionBox<T> box = await collection.openBox<T>(boxName);
+    return box;
+  }
+
   void collectionClose() async => collection.close();
   void collectionDeleteFromDisk() async => collection.deleteFromDisk();
 }
