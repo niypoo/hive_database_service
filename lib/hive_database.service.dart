@@ -1,109 +1,53 @@
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveDatabaseService extends GetxService {
   ///TO STATIC SERVICE
-  static HiveDatabaseService get to => Get.find();
-
-  ///PROPERTIES
-  late BoxCollection collection;
-  late String path;
-
-  HiveDatabaseService({
-    required this.name,
-    required this.boxNames,
-    required this.registerAdapters,
-    this.cipherKey,
-  });
-
-  ///NAME OF COLLECTION (REQUIRED)*
-  final String name;
-
-  ///BOXES NAMES (REQUIRED)*
-  final Set<String> boxNames;
-
-  ///OBJECT ADAPTERS (OPTIONAL)
-  final Future<void> Function() registerAdapters;
-
-  ///ENCRYPTION KEY (OPTIONAL)
-  final HiveCipher? cipherKey;
+  static HiveDatabaseService get to => Get.find<HiveDatabaseService>();
 
   ///INITIALIZATION
   Future<HiveDatabaseService> init() async {
-    ///defined path
-    final appDocumentDirectory = await getApplicationDocumentsDirectory();
-
-    ///register Objects adapters is exist
-    registerAdapters();
-
-    ///instantiate collection
-    collection = await BoxCollection.open(
-      name,
-      boxNames,
-      path: appDocumentDirectory.path,
-      key: cipherKey,
-    );
-
+    await Hive.initFlutter();
     return this;
   }
 
-  static Future<void> registerAdapter<T>(TypeAdapter<T> adapter) async {
-    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+  /// Create the box or return box is exist
+  Future<Box<T>> createBox<T>(String name) async => await Hive.openBox<T>(name);
+
+  /// Get and read exist box
+  Box<T> getBox<T>(String name) => Hive.box<T>(name);
+
+  /// register Adapter
+  Future<void> registerAdapter<T>(TypeAdapter<T> adapter) async =>
       Hive.registerAdapter<T>(adapter);
-    }
-  }
 
-  ///BOX METHODS
-  Future<void> put<T>(
-    String boxName, {
-    required String id,
-    dynamic value,
-  }) async =>
-      (await openBox<T>(boxName)).put(id, value);
+  /// Get and read a data from box by index
+  T? getByIndex<T>(String boxName, int index) =>
+      (getBox<T>(boxName)).getAt(index);
 
-  Future<T?> get<T>(
-    String boxName, {
-    required String id,
-  }) async =>
-      (await openBox<T>(boxName)).get(id);
+  /// Get and read a data from box by key
+  T? find<T>(String boxName, String id) => (getBox<T>(boxName)).get(id);
 
-  Future<Map<String, T>> getAllValues<T>(String boxName) async =>
-      (await openBox<T>(boxName)).getAllValues();
+  /// Get and read a all data from box
+  Iterable<T> all<T>(String boxName, String id) => (getBox<T>(boxName)).values;
 
-  Future<void> delete<T>(
-    String boxName, {
-    required String id,
-  }) async =>
-      (await openBox<T>(boxName)).delete(id);
+  /// delete a data from box by index
+  Future<void> deleteByIndex<T>(String boxName, int index) async =>
+      await (getBox<T>(boxName)).deleteAt(index);
 
-  Future<void> deleteAll<T>(
-    String boxName, {
-    required List<String> ids,
-  }) async =>
-      (await openBox<T>(boxName)).deleteAll(ids);
+  /// delete a data from box by index
+  Future<void> deleteByKey<T>(String boxName, String id) async =>
+      await (getBox<T>(boxName)).delete(id);
 
+  /// delete ids  from box by index
+  Future<void> deleteAll<T>(String boxName, Set ids) async =>
+      await (getBox<T>(boxName)).deleteAll(ids);
+
+  /// delete And Close a Box
+  Future<void> deleteAndCloseBox<T>(String boxName) async =>
+      await (getBox<T>(boxName)).deleteFromDisk();
+
+  /// delete And Close a Box
   Future<void> clear<T>(String boxName) async =>
-      (await openBox<T>(boxName)).clear();
-
-  Future<void> flush<T>(String boxName) async =>
-      (await openBox<T>(boxName)).flush();
-
-  Future<List<T?>> getAll<T>(
-    String boxName, {
-    required List<String> ids,
-  }) async =>
-      (await openBox<T>(boxName)).getAll(ids);
-
-  Future<List<String>> getAllKeys<T>(String boxName) async =>
-      (await openBox<T>(boxName)).getAllKeys();
-
-  ///COLLECTIONS METHODS
-  Future<CollectionBox<T>> openBox<T>(String boxName) async {
-    final CollectionBox<T> box = await collection.openBox<T>(boxName);
-    return box;
-  }
-
-  void collectionClose() async => collection.close();
-  void collectionDeleteFromDisk() async => collection.deleteFromDisk();
+      await (getBox<T>(boxName)).clear();
 }
