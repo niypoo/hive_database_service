@@ -13,8 +13,8 @@ class HiveDatabaseService extends GetxService {
   HiveDatabaseService({
     required this.name,
     required this.boxNames,
+    required this.registerAdapters,
     this.cipherKey,
-    this.adapters,
   });
 
   ///NAME OF COLLECTION (REQUIRED)*
@@ -24,7 +24,7 @@ class HiveDatabaseService extends GetxService {
   final Set<String> boxNames;
 
   ///OBJECT ADAPTERS (OPTIONAL)
-  final Set<TypeAdapter>? adapters;
+  final Future<void> Function() registerAdapters;
 
   ///ENCRYPTION KEY (OPTIONAL)
   final HiveCipher? cipherKey;
@@ -35,7 +35,7 @@ class HiveDatabaseService extends GetxService {
     final appDocumentDirectory = await getApplicationDocumentsDirectory();
 
     ///register Objects adapters is exist
-    registerAdapter(adapters);
+    registerAdapters();
 
     ///instantiate collection
     collection = await BoxCollection.open(
@@ -46,19 +46,6 @@ class HiveDatabaseService extends GetxService {
     );
 
     return this;
-  }
-
-  ///Register Objects Adapters
-  void registerAdapter<T>(Set<TypeAdapter<T>>? adapters) {
-    ///skip
-    if (adapters == null || adapters.isEmpty) return;
-
-    ///register
-    for (var adapter in adapters) {
-      if (!Hive.isAdapterRegistered(adapter.typeId)) {
-        Hive.registerAdapter<T>(adapter);
-      }
-    }
   }
 
   ///BOX METHODS
