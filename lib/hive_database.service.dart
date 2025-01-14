@@ -48,6 +48,12 @@ class HiveDatabaseService extends GetxService {
     return this;
   }
 
+  Future<void> registerAdapter<T>(TypeAdapter<T> adapter) async {
+    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+      Hive.registerAdapter<T>(adapter);
+    }
+  }
+
   ///BOX METHODS
   Future<void> put<T>(
     String boxName, {
