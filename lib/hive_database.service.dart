@@ -21,14 +21,15 @@ class HiveDatabaseService extends GetxService {
   }
 
   /// Create the box or return box is exist
-  Future<Box<T>> createBox<T>(String name) async => await Hive.openBox<T>(name);
+  static Future<Box<T>> createBox<T>(String name) async =>
+      await Hive.openBox<T>(name);
+
+  /// register Adapter
+  static Future<void> registerAdapter<T>(TypeAdapter<T> adapter) async =>
+      Hive.registerAdapter<T>(adapter);
 
   /// Get and read exist box
   Box<T> getBox<T>(String name) => Hive.box<T>(name);
-
-  /// register Adapter
-  Future<void> registerAdapter<T>(TypeAdapter<T> adapter) async =>
-      Hive.registerAdapter<T>(adapter);
 
   /// Get and read a data from box by index
   T? getByIndex<T>(String boxName, int index) =>
