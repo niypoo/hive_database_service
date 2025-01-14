@@ -39,7 +39,7 @@ class HiveDatabaseService extends GetxService {
   T? find<T>(String boxName, String id) => (getBox<T>(boxName)).get(id);
 
   /// Get and read a all data from box
-  Iterable<T> all<T>(String boxName, String id) => (getBox<T>(boxName)).values;
+  Iterable<T> all<T>(String boxName) => (getBox<T>(boxName)).values;
 
   /// delete a data from box by index
   Future<void> deleteByIndex<T>(String boxName, int index) async =>
