@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveDatabaseService extends GetxService {
-  
   ///TO STATIC SERVICE
   static HiveDatabaseService get to => Get.find();
 
@@ -20,18 +19,18 @@ class HiveDatabaseService extends GetxService {
 
   ///NAME OF COLLECTION (REQUIRED)*
   final String name;
+
   ///BOXES NAMES (REQUIRED)*
   final Set<String> boxNames;
+
   ///OBJECT ADAPTERS (OPTIONAL)
   final Set<TypeAdapter>? adapters;
+
   ///ENCRYPTION KEY (OPTIONAL)
   final HiveCipher? cipherKey;
 
-
-
   ///INITIALIZATION
   Future<HiveDatabaseService> init() async {
-
     ///defined path
     final appDocumentDirectory = await getApplicationDocumentsDirectory();
 
@@ -49,7 +48,6 @@ class HiveDatabaseService extends GetxService {
     return this;
   }
 
-
   ///Register Objects Adapters
   void registerAdapter(Set<TypeAdapter>? adapters) {
     ///skip
@@ -62,9 +60,6 @@ class HiveDatabaseService extends GetxService {
       }
     }
   }
-
-
-
 
   ///BOX METHODS
   Future<void> put<T>(
@@ -80,10 +75,7 @@ class HiveDatabaseService extends GetxService {
   }) async =>
       (await openBox<T>(boxName)).get(id);
 
-  Future<Map<String, T>> getAllValues<T>(
-    String boxName, {
-    required String id,
-  }) async =>
+  Future<Map<String, T>> getAllValues<T>(String boxName) async =>
       (await openBox<T>(boxName)).getAllValues();
 
   Future<void> delete<T>(
@@ -112,7 +104,6 @@ class HiveDatabaseService extends GetxService {
 
   Future<List<String>> getAllKeys<T>(String boxName) async =>
       (await openBox<T>(boxName)).getAllKeys();
-
 
   ///COLLECTIONS METHODS
   Future<CollectionBox<T>> openBox<T>(String boxName) async {
