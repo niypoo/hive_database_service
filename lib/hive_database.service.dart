@@ -99,11 +99,10 @@ class HiveDatabaseService extends GetxService {
       (await openBox<T>(boxName)).getAllKeys();
 
   ///COLLECTIONS METHODS
-  Future<CollectionBox<T>> openBox<T>(String boxName) async {
-    final CollectionBox<T> box = await collection.openBox<T>(boxName);
-    return box;
-  }
+  Future<CollectionBox<T>> openBox<T>(String boxName) async =>
+      collection.openBox<T>(boxName);
 
   void collectionClose() async => collection.close();
+  
   void collectionDeleteFromDisk() async => collection.deleteFromDisk();
 }
