@@ -85,7 +85,7 @@ class HiveDatabaseService extends GetxService {
 
   ///COLLECTIONS METHODS
   Box<T> box<T>(String boxName) => Hive.box<T>(boxName);
-  List<T> values<T>(String boxName) => box<T>(boxName).values.toList();
+  List<T> all<T>(String boxName) => box<T>(boxName).values.toList();
   void collectionClose() async => collection.close();
   void collectionDeleteFromDisk() async => collection.deleteFromDisk();
 }
