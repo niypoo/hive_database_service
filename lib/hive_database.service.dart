@@ -1,13 +1,22 @@
 import 'package:get/get.dart';
+import 'package:hive_database_service/interfaces/hive.handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveDatabaseService extends GetxService {
   ///TO STATIC SERVICE
   static HiveDatabaseService get to => Get.find<HiveDatabaseService>();
 
+  // Handler
+  final HiveDatabaseHandler handler;
+
+  /// CONSTRUCTION
+  HiveDatabaseService({required this.handler});
+
   ///INITIALIZATION
   Future<HiveDatabaseService> init() async {
     await Hive.initFlutter();
+    await handler.adaptersRegistrations();
+    await handler.boxesCreation();
     return this;
   }
 
