@@ -38,6 +38,28 @@ class HiveDatabaseService extends GetxService {
   /// Get and read a data from box by key
   T? find<T>(String boxName, String id) => (getBox<T>(boxName)).get(id);
 
+  /// Get and read a data from box by key
+  Future<int> add<T>(String boxName, T object) async =>
+      await (getBox<T>(boxName)).add(object);
+
+  /// Get and read a data from box by key
+  Future<Iterable<int>> addAll<T>(String boxName, Iterable<T> objects) async =>
+      await (getBox<T>(boxName)).addAll(objects);
+
+  /// Get and read a data from box by key
+  Future<void> put<T>(String boxName,
+          {required String id, required T value}) async =>
+      await (getBox<T>(boxName)).put(id, value);
+
+  /// Get and read a data from box by key
+  Future<void> putAll<T>(String boxName, Map<dynamic, T> values) async =>
+      await (getBox<T>(boxName)).putAll(values);
+
+  /// Get and read a data from box by key
+  Future<void> putAt<T>(String boxName,
+          {required int index, required T value}) async =>
+      await (getBox<T>(boxName)).putAt(index, value);
+
   /// Get and read a all data from box
   Iterable<T> all<T>(String boxName) => (getBox<T>(boxName)).values;
 
