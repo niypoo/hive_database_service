@@ -49,14 +49,14 @@ class HiveDatabaseService extends GetxService {
   }
 
   ///Register Objects Adapters
-  void registerAdapter(Set<TypeAdapter>? adapters) {
+  void registerAdapter<T>(Set<TypeAdapter<T>>? adapters) {
     ///skip
     if (adapters == null || adapters.isEmpty) return;
 
     ///register
     for (var adapter in adapters) {
       if (!Hive.isAdapterRegistered(adapter.typeId)) {
-        Hive.registerAdapter(adapter);
+        Hive.registerAdapter<T>(adapter);
       }
     }
   }
