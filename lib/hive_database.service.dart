@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hive_database_service/interfaces/hive.handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -59,6 +60,17 @@ class HiveDatabaseService extends GetxService {
   Future<void> putAt<T>(String boxName,
           {required int index, required T value}) async =>
       await (getBox<T>(boxName)).putAt(index, value);
+
+  /// Get and read a all data from box
+  ValueListenable<Box<T>> listenable<T>(String boxName) =>
+      (getBox<T>(boxName)).listenable();
+
+  /// Get and read a all data from box
+  void addListener<T>(String boxName, void Function() listener) =>
+      listenable<T>(boxName).addListener(listener);
+
+  /// Get and read a all data from box
+  Stream<BoxEvent> watch<T>(String boxName) => (getBox<T>(boxName)).watch();
 
   /// Get and read a all data from box
   Iterable<T> all<T>(String boxName) => (getBox<T>(boxName)).values;
