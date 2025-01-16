@@ -37,7 +37,8 @@ class HiveDatabaseService extends GetxService {
       (getBox<T>(boxName)).getAt(index);
 
   /// Get and read a data from box by key
-  T? find<T>(String boxName, String id) => (getBox<T>(boxName)).get(id);
+  T? find<T>(String boxName, String id, {T? defaultValue}) =>
+      (getBox<T>(boxName)).get(id, defaultValue: defaultValue);
 
   /// Get and read a data from box by key
   Future<int> add<T>(String boxName, T object) async =>
